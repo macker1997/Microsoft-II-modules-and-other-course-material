@@ -1,0 +1,108 @@
+
+### SLIDE 5 ##############################
+
+Dsquery user –samid “dadmin”
+Whoami /fqdn
+
+### SLIDE 6 ##############################
+
+DOSKEY /history
+
+dsquery user /?
+(show help options.  Explain -o for example)
+
+### SLIDE 9 ##############################
+
+DSQUERY COMPUTER -name "Server*"
+DSQUERY USER –samid "smattis"
+DSQUERY USER –name "Sean Mattis" –o UPN
+DSQUERY USER –name "Sean Mattis" –o DN
+DSQUERY USER –name “Sean Mattis” –o RDN
+DSQUERY GROUP –name "DLG*"
+
+
+### SLIDE 10 ##############################
+
+DSQUERY user –upn smattis@geoffb.local
+
+### SLIDE 16 ##############################
+
+dsadd ou "ou=MOD7,dc=GeoffB,dc=local"
+dsquery ou -name MOD7
+dsadd ou "ou=students,ou=MOD7,dc=GeoffB,dc=local"
+
+###(then query using DSQUERY)
+dsquery ou -name students
+
+### SLIDE 20  ##############################
+
+DSADD USER "CN=Bird Person, OU=students,OU=MOD7,DC=GeoffB,DC=local" -samid "bperson" -upn "bperson@GeoffB.local" -fn "Bird" -ln "Person" -display "Bird Person" -desc "A bird like person" -pwd 'Pa$$w0rd' -hmdrv H: -hmdir \\Server1-GGB\Docshare\bperson -disabled yes
+
+### SLIDE 21  ##############################
+
+dsadd user "CN=Student1,ou=students,ou=MOD7,dc=GeoffB,dc=local"
+dsadd user "CN=Student2,ou=students,ou=MOD7,dc=GeoffB,dc=local" -samid gmorris -fn George -ln Morris -upn gmorris@GeoffB.local
+
+### SLIDE 26 ##############################
+
+dsadd group "CN=MOD7Students,OU=Students,OU=MOD7,DC=GeoffB,DC=local" -scope g -desc "Group for Students" -members "CN=Student1,OU=Students,OU=MOD7,DC=GeoffB,DC=local”
+
+DSQUERY group -name "MOD7*"
+
+### SLIDE 29 ##############################
+
+Dsadd computer "CN=WebServer1,CN=Computers,DC=GeoffB,DC=LOCAL“ -desc “This computer doesn’t exist!"
+
+DSQUERY computer "CN=WebServer1,CN=Computers,DC=GeoffB,DC=LOCAL"
+
+### SLIDE 34 ##############################
+
+dsmod user "CN=student2,OU=Students,OU=MOD7,DC=GeoffB,DC=Local" -fn "Sam"
+
+dsquery user -samid "gmorris"
+dsquery user "CN=Student2,OU=students,OU=MOD7,DC=geoffb,DC=local"
+
+dsmod group "CN=PREPStudents,OU=students,OU=MOD7,DC=GeoffB,DC=local" -addmbr "CN=student2,OU=students,OU=MOD7,DC=GeoffB,DC=local"
+
+### SLIDE 38 ##############################
+
+Dsadd user cn=teacher,cn=users,dc=GeoffB,dc=local 
+
+dsquery user cn=teacher,cn=users,dc=GeoffB,dc=local 
+
+dsmove cn=teacher,cn=users,dc=GeoffB,dc=local -newparent "ou=students,OU=MOD7,dc=GeoffB,dc=local"
+
+### SLIDE 41 ##############################
+
+DSRM "cn=teacher,ou=students,OU=MOD7,dc=GeoffB,dc=local"
+
+### Slide 46 ##############################
+
+Cd \
+Md DeleteMe
+##(create directory)
+
+net share BadShare="C:\deleteme" /remark:“Delete This later" /grant:Everyone,Full
+##(Create share, give Everyone >> FC)
+
+f:
+##(show that drive doesn't exist)
+
+net use f: \\localhost\badshare
+##(mount the share to f:)
+
+net share
+net view \\localhost
+##(showthat both of these commands show shared objects, but net view doesn't show administrative shares)
+
+net use f: /delete
+(delete the mount point)
+
+f:
+##(show the mount point was deleted)
+
+net share BadShare /delete
+##(delete the share)
+
+net share
+##(show the share was deleted)

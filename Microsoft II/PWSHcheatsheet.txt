@@ -1,0 +1,85 @@
+### Slide 3/4 ##############################
+ 
+New-ADorganizationalUnit -name MOD7Pwsh -path "dc=geoffb,dc=local"
+
+Get-ADOrganizationalUnit -Identity "OU=MOD7Pwsh,DC=geoffb,DC=LOCAL"
+Get-ADOrganizationalUnit -Identity "OU=MOD7Pwsh,DC=geoffb,DC=LOCAL" | fl -Property *
+Get-ADOrganizationalUnit -filter {name -like "MOD7Pwsh"}
+
+### Slide 9/10 ##############################
+
+New-ADUser -name "Chris P Bacon" -path "ou=MOD7Pwsh,DC=geoffb,dc=local" -SamAccountName cbacon
+
+Get-aduser -Identity cbacon
+
+New-ADUser "Dinah Mite" -path "ou=MOD7Pwsh,DC=geoffb,dc=local" -SamAccountName dmite –surname Mite –givenName Dinah –userprincipalname Dinah.mite@geoffb.local -AccountPassword (ConvertTo-SecureString 'Pa$$w0rd' -AsPlainText -Force) -passthru
+
+Get-aduser -Identity Dmite
+
+Get-aduser -filter {name -like "Dinah Mite"}
+
+### Slide 12 ##############################
+
+Remove-ADUser cbacon
+
+New-ADUser -name "Chris P Bacon" -path "ou=MOD7Pwsh,DC=geoffb,dc=local" -SamAccountName cbacon
+
+Get-ADUser cbacon | Remove-aduser
+
+
+### Slide 13 ##############################
+
+disable-adaccount -Identity cbacon -PassThru
+enable-adaccount -Identity cbacon -PassThru
+
+Get-aduser -Filter * | Select name,Enabled
+
+### Slide 15 ##############################
+
+Set-ADUser -identity dmite -Manager smattis
+
+Get-ADUser smattis -Properties name,manager
+Get-ADUser smattis -Properties manager | select name,manager
+
+Disable-ADAccount cbacon
+Get-Aduser cbacon
+Get-aduser -Identity cbacon | Select name,Enabled
+Get-aduser -Filter * | Select name,Enabled
+
+Set-ADAccountPassword dmite -NewPassword (ConvertTo-SecureString ‘P@$$w0rd’ -AsPlainText)
+
+Unlock-ADAccount dmite
+Get-ADUser dmite -Properties LockedOut
+Get-ADUser dmite -Properties LockedOut | select name,Lockedout
+
+###  Slide 17 ##############################
+
+Get-ADGroup –Identity "MOD7Students"
+Get-ADGroup -Filter {GroupCategory -eq 'Security' -and GroupScope -eq 'Global'}
+
+Get-ADGroup -Filter {GroupCategory -eq 'Security' -and GroupScope -eq 'Global'} | select name,groupscope
+
+Get-ADGroupMember -Identity "Domain users" | Select name | Format-Wide -Column 4
+
+###  Slide 20 ##############################
+
+New-ADGroup “PunnyGroup” -GroupScope G -GroupCategory S -path "ou=MOD7Pwsh,dc=geoffb,dc=local" -passthru
+
+Get-ADgroup -identity "PunnyGroup"
+
+### Slide 22 ##############################
+
+Set-ADGroup "PunnyGroup" -Description "Whatever" -GroupScope U -GroupCategory S -passthru
+
+Get-ADGroup -Identity "PunnyGroup" -Properties Description
+
+Add-ADGroupMember "PunnyGroup"  -Members cbacon,dmite
+Get-ADGroup "PunnyGroup" -Properties members
+
+
+### Slide 22 ##############################
+
+Remove-ADgroup -Identity "PunnyGroup"
+
+
+
